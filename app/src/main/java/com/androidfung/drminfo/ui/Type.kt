@@ -19,10 +19,13 @@ val typography = Typography(
         fontWeight = FontWeight.W500,
         fontSize = 14.sp
     ),
+
+         */
+                ,
     caption = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp
     )
-    */
+
 )

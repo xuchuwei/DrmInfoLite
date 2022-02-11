@@ -17,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.androidfung.drminfo.ui.DRMInfoTheme
@@ -43,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             DRMInfoTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = Color(0xFFEEEEEE)) {
-                    Column(modifier = Modifier.fillMaxSize()) {
+                    Column(Modifier.verticalScroll(rememberScrollState())) {
                         DeviceInfo()
 
                         clearkeyDrm?.let {
@@ -95,7 +97,13 @@ private fun getPropertyString(mediaDrm: MediaDrm, key: String): String? {
 fun DrmInfo(mediaDrm: MediaDrm) {
     val vendor = getPropertyString(mediaDrm, MediaDrm.PROPERTY_VENDOR)
     val description = getPropertyString(mediaDrm, MediaDrm.PROPERTY_DESCRIPTION)
+    val version = getPropertyString(mediaDrm, MediaDrm.PROPERTY_VERSION)
+    val hdcp_level: Array<String> = arrayOf("Known", "None", "v1", "v2", "v2.1", "v2.2", "v2.3")
+    val max_hdcp_level = if (mediaDrm.maxHdcpLevel >= 0 && mediaDrm.maxHdcpLevel < hdcp_level.size)
+                            hdcp_level[mediaDrm.maxHdcpLevel]
+                        else "Unsupported"
     val securityLevel = getPropertyString(mediaDrm, "securityLevel")
+
     Box(modifier = Modifier.padding(16.dp)) {
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(Modifier.padding(16.dp)) {
@@ -103,19 +111,31 @@ fun DrmInfo(mediaDrm: MediaDrm) {
 
                 description?.let { d ->
                     Text(d, style = typography.h6)
-                    //Spacer((8.dp))
+                    Spacer((Modifier.height(8.dp)))
                 }
 
                 vendor?.let { v ->
                     Text("Vendor", style = typography.caption)
                     Text(v, style = typography.body2)
-                    //Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(8.dp))
+                }
+
+                version?.let { v ->
+                    Text("Version", style = typography.caption)
+                    Text(v, style = typography.body2)
+                    Spacer(Modifier.height(8.dp))
+                }
+
+                max_hdcp_level?.let { v->
+                    Text("Max HDCP level", style = typography.caption)
+                    Text(v, style = typography.body2)
+                    Spacer(Modifier.height(8.dp))
                 }
 
                 securityLevel?.let { sl ->
                     Text("Security Level", style = typography.caption)
                     Text(sl, style = typography.body2)
-                    //Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(8.dp))
                 }
 
             }
